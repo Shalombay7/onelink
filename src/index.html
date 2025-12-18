@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneLink Car Rentals</title>
+  <meta name="description" content="Modern car rental booking for OneLink Car Rentals" />
+  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <!-- Icons (replace with your own) -->
+  <link rel="icon" type="image/png" href="https://placehold.co/192x192/0066ff/ffffff?text=OL" />
+</head>
+<body>
+  <header class="ol-header">
+    <div class="ol-container ol-header-inner">
+      <div class="ol-logo">
+        <span class="ol-logo-mark">OL</span>
+        <span class="ol-logo-text">OneLink Car Rentals</span>
+      </div>
+
+      <nav class="ol-nav">
+        <a href="#hero">Home</a>
+        <a href="#fleet">Fleet</a>
+        <a href="#checkout">Book</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button id="themeToggle" class="ol-theme-toggle" aria-label="Toggle color theme">
+        <span class="ol-theme-toggle-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero with side-scrolling cars -->
+    <section id="hero" class="ol-hero">
+      <div class="ol-container ol-hero-inner">
+        <div class="ol-hero-copy">
+          <h1>Drive comfort. Rent smart.</h1>
+          <p>
+            Seamless car rentals with transparent pricing, flexible pickup options,
+            and instant confirmation via WhatsApp.
+          </p>
+          <div class="ol-hero-actions">
+            <a href="#checkout" class="ol-btn ol-btn-primary">Book your car</a>
+            <a href="#fleet" class="ol-btn ol-btn-ghost">Browse fleet</a>
+          </div>
+          <div class="ol-hero-meta">
+            <span>24/7 support</span>
+            <span>Fully insured vehicles</span>
+            <span>Trusted local provider</span>
+          </div>
+        </div>
+
+        <aside class="ol-hero-media" aria-hidden="true">
+          <div class="ol-hero-bg" role="img" aria-label="Car in motion background"></div>
+          <div class="ol-hero-media-overlay" aria-hidden="true"></div>
+
+          <!-- Keep carousel elements hidden so existing JS doesn't break -->
+          <div style="display:none;">
+            <div class="ol-carousel-track" id="carouselTrack"><!-- Slides injected by JS --></div>
+            <div class="ol-carousel-dots" id="carouselDots"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Fleet teaser -->
+    <section id="fleet" class="ol-section">
+      <div class="ol-container">
+        <h2>Featured fleet</h2>
+        <p class="ol-section-lead">
+          Pick from economy, business, and SUV options to match your trip and budget.
+        </p>
+
+        <div class="ol-grid ol-grid-3" id="fleetGrid">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkout with WhatsApp order summary -->
+    <section id="checkout" class="ol-section ol-section-alt">
+      <div class="ol-container">
+        <h2>Quick booking</h2>
+        <p class="ol-section-lead">
+          Fill the details below. The full order summary will open in WhatsApp for final confirmation and payment.
+        </p>
+
+        <div class="ol-checkout-layout">
+          <!-- Form -->
+          <form id="bookingForm" class="ol-card ol-form">
+            <div class="ol-form-row">
+              <label for="fullName">Full name</label>
+              <input type="text" id="fullName" name="fullName" required placeholder="John Doe" />
+            </div>
+
+            <div class="ol-form-row">
+              <label for="phone">Phone (with country code)</label>
+              <input type="tel" id="phone" name="phone" required placeholder="+233..." />
+            </div>
+
+            <div class="ol-form-row">
+              <label for="email">Email (optional)</label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" />
+            </div>
+
+            <div class="ol-form-row">
+              <label for="carSelect">Car</label>
+              <select id="carSelect" name="carSelect" required>
+                <!-- Options injected by JS -->
+              </select>
+            </div>
+
+            <div class="ol-form-row ol-form-row-inline">
+              <div>
+                <label for="pickupDate">Pickup date</label>
+                <input type="date" id="pickupDate" name="pickupDate" required />
+              </div>
+              <div>
+                <label for="returnDate">Return date</label>
+                <input type="date" id="returnDate" name="returnDate" required />
+              </div>
+            </div>
+
+            <div class="ol-form-row ol-form-row-inline">
+              <div>
+                <label for="pickupLocation">Pickup location</label>
+                <input type="text" id="pickupLocation" name="pickupLocation" required placeholder="Airport, city center..." />
+              </div>
+              <div>
+                <label for="dropoffLocation">Drop-off location</label>
+                <input type="text" id="dropoffLocation" name="dropoffLocation" required placeholder="Same as pickup or custom" />
+              </div>
+            </div>
+
+            <div class="ol-form-row">
+              <label for="notes">Special notes (optional)</label>
+              <textarea id="notes" name="notes" rows="3" placeholder="Child seat, late arrival, additional driver, etc."></textarea>
+            </div>
+
+            <button type="submit" class="ol-btn ol-btn-primary ol-btn-full">
+              Review &amp; send via WhatsApp
+            </button>
+
+            <p class="ol-form-hint">
+              By continuing, you agree to receive your booking summary on WhatsApp for final payment arrangements.
+            </p>
+          </form>
+
+          <!-- Order summary -->
+          <aside class="ol-card ol-summary" id="orderSummary">
+            <h3>Order summary</h3>
+            <ul class="ol-summary-list">
+              <li><span>Car</span><span id="summaryCar">–</span></li>
+              <li><span>Rental dates</span><span id="summaryDates">–</span></li>
+              <li><span>Duration</span><span id="summaryDuration">–</span></li>
+              <li><span>Pickup</span><span id="summaryPickup">–</span></li>
+              <li><span>Drop-off</span><span id="summaryDropoff">–</span></li>
+              <li><span>Estimated daily rate</span><span id="summaryRate">–</span></li>
+              <li><span>Estimated total</span><span id="summaryTotal">–</span></li>
+            </ul>
+            <p class="ol-summary-note">
+              Final price and payment link will be confirmed by an agent on WhatsApp.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact / info -->
+    <section id="contact" class="ol-section">
+      <div class="ol-container">
+        <h2>Contact & support</h2>
+        <p class="ol-section-lead">
+          Questions before booking? Send a WhatsApp message or use the quick chat button on the screen.
+        </p>
+
+        <div class="ol-grid ol-grid-3 ol-contact-grid">
+          <div class="ol-card">
+            <h3>WhatsApp</h3>
+            <p>Chat with a live agent for availability, special requests and corporate rates.</p>
+            <a id="contactWhatsAppLink" href="#" target="_blank" class="ol-link">
+              Open WhatsApp chat →
+            </a>
+          </div>
+          <div class="ol-card">
+            <h3>Working hours</h3>
+            <p>Every day: 8:00 – 22:00 (local time). Airport pickups can be arranged 24/7 on request.</p>
+          </div>
+          <div class="ol-card">
+            <h3>Pick-up locations</h3>
+            <p>Major airports and city hubs. Add your preferred location in the booking form.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="ol-footer">
+    <div class="ol-container ol-footer-inner">
+      <div class="ol-footer-left">
+        <span class="ol-logo-mark">OL</span>
+        <span>© <span id="footerYear"></span> OneLink Car Rentals. All rights reserved.</span>
+      </div>
+      <div class="ol-footer-links">
+        <a href="#hero">Home</a>
+        <a href="#fleet">Fleet</a>
+        <a href="#checkout">Book</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp button -->
+  <a id="floatingWhatsApp" class="ol-floating-whatsapp" href="#" target="_blank" aria-label="Chat on WhatsApp">
+    <span class="ol-wa-icon">🟢</span>
+  </a>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "onelink-car-rentals",
+  "version": "1.0.0",
+  "description": "OneLink Car Rentals PWA",
+  "private": true,
+  "scripts": {
+    "start": "http-server src -p 3000 -c-1 -o"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
