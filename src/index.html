@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OneLink Car Rentals</title>
-  <meta name="description" content="Modern car rental booking for OneLink Car Rentals" />
+  <meta name="description" content="Comfortable car rental booking with cart and WhatsApp checkout for OneLink Car Rentals" />
   <link rel="stylesheet" href="./styles.css" />
 
   <!-- PWA Manifest -->
@@ -40,10 +40,10 @@
     <section id="hero" class="ol-hero">
       <div class="ol-container ol-hero-inner">
         <div class="ol-hero-copy">
-          <h1>Drive comfort. Rent smart.</h1>
+          <h1>Rent with ease. Travel in comfort.</h1>
           <p>
-            Seamless car rentals with transparent pricing, flexible pickup options,
-            and instant confirmation via WhatsApp.
+            Comfortable rentals for everyday trips, business travel, and family journeys.
+            Add a car to your cart or send a direct WhatsApp checkout in one step.
           </p>
           <div class="ol-hero-actions">
             <a href="#checkout" class="ol-btn ol-btn-primary">Book your car</a>
@@ -74,7 +74,7 @@
       <div class="ol-container">
         <h2>Featured fleet</h2>
         <p class="ol-section-lead">
-          Pick from economy, business, and SUV options to match your trip and budget.
+          Choose from 4x4, saloon, and SUV options that feel right for work, family, or weekend trips.
         </p>
 
         <div class="ol-grid ol-grid-3" id="fleetGrid">
@@ -88,7 +88,7 @@
       <div class="ol-container">
         <h2>Quick booking</h2>
         <p class="ol-section-lead">
-          Fill the details below. The full order summary will open in WhatsApp for final confirmation and payment.
+          Fill in your details. You can add one or more vehicles to your cart, or send a direct booking to WhatsApp for immediate confirmation.
         </p>
 
         <div class="ol-checkout-layout">
@@ -148,26 +148,50 @@
             </button>
 
             <p class="ol-form-hint">
-              By continuing, you agree to receive your booking summary on WhatsApp for final payment arrangements.
+              Your booking summary is prepared locally and sent to WhatsApp with the correct vehicle, dates, and pricing.
             </p>
           </form>
 
-          <!-- Order summary -->
-          <aside class="ol-card ol-summary" id="orderSummary">
-            <h3>Order summary</h3>
-            <ul class="ol-summary-list">
-              <li><span>Car</span><span id="summaryCar">–</span></li>
-              <li><span>Rental dates</span><span id="summaryDates">–</span></li>
-              <li><span>Duration</span><span id="summaryDuration">–</span></li>
-              <li><span>Pickup</span><span id="summaryPickup">–</span></li>
-              <li><span>Drop-off</span><span id="summaryDropoff">–</span></li>
-              <li><span>Estimated daily rate</span><span id="summaryRate">–</span></li>
-              <li><span>Estimated total</span><span id="summaryTotal">–</span></li>
-            </ul>
-            <p class="ol-summary-note">
-              Final price and payment link will be confirmed by an agent on WhatsApp.
-            </p>
-          </aside>
+          <div class="ol-checkout-sidebar">
+            <aside class="ol-card ol-cart-panel" id="cartPanel">
+              <div class="ol-panel-head">
+                <h3>Your cart</h3>
+                <span id="cartCount">0 items</span>
+              </div>
+
+              <div id="cartItems" class="ol-cart-items"></div>
+              <p id="cartEmpty" class="ol-cart-empty">No cars added yet. Use the buttons in the fleet cards to build your cart.</p>
+
+              <div class="ol-cart-footer">
+                <div class="ol-cart-total">
+                  <span>Estimated cart total</span>
+                  <strong id="cartSubtotal">–</strong>
+                </div>
+                <button type="button" id="cartCheckoutButton" class="ol-btn ol-btn-primary ol-btn-full">
+                  Checkout cart on WhatsApp
+                </button>
+                <button type="button" id="clearCartButton" class="ol-btn ol-btn-ghost ol-btn-full">
+                  Clear cart
+                </button>
+              </div>
+            </aside>
+
+            <aside class="ol-card ol-summary" id="orderSummary">
+              <h3>Order summary</h3>
+              <ul class="ol-summary-list">
+                <li><span>Car</span><span id="summaryCar">–</span></li>
+                <li><span>Rental dates</span><span id="summaryDates">–</span></li>
+                <li><span>Duration</span><span id="summaryDuration">–</span></li>
+                <li><span>Pickup</span><span id="summaryPickup">–</span></li>
+                <li><span>Drop-off</span><span id="summaryDropoff">–</span></li>
+                <li><span>Estimated daily rate</span><span id="summaryRate">–</span></li>
+                <li><span>Estimated total</span><span id="summaryTotal">–</span></li>
+              </ul>
+              <p class="ol-summary-note">
+                Final details are sent to WhatsApp at +233242674116 with the selected vehicle and live order summary.
+              </p>
+            </aside>
+          </div>
         </div>
       </div>
     </section>

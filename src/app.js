@@ -3,46 +3,73 @@
 // 1. Configuration & Data
 const CONFIG = {
   currency: "USD",
-  whatsappNumber: "15550109999", // REPLACE with real number (no + sign)
+  whatsappNumber: "233242674116",
 };
 
 const fleet = [
   {
-    id: "eco1",
-    name: "Toyota Yaris",
-    type: "Economy",
-    price: 45,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Toyota+Yaris",
+    id: "4x4-1",
+    name: "Toyota Land Cruiser Prado",
+    type: "4x4",
+    price: 180,
+    transmission: "Automatic",
+    seats: 7,
+    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Land+Cruiser+Prado",
   },
   {
-    id: "sedan1",
-    name: "Honda Civic",
-    type: "Sedan",
-    price: 65,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Honda+Civic",
+    id: "4x4-2",
+    name: "Mitsubishi Pajero Sport",
+    type: "4x4",
+    price: 165,
+    transmission: "Automatic",
+    seats: 7,
+    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Pajero+Sport",
   },
   {
-    id: "suv1",
+    id: "saloon-1",
+    name: "Toyota Corolla",
+    type: "Saloon",
+    price: 75,
+    transmission: "Automatic",
+    seats: 5,
+    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Toyota+Corolla",
+  },
+  {
+    id: "saloon-2",
+    name: "Honda Accord",
+    type: "Saloon",
+    price: 95,
+    transmission: "Automatic",
+    seats: 5,
+    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Honda+Accord",
+  },
+  {
+    id: "suv-1",
     name: "Hyundai Tucson",
     type: "SUV",
-    price: 95,
+    price: 120,
+    transmission: "Automatic",
+    seats: 5,
     image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Hyundai+Tucson",
   },
   {
-    id: "lux1",
-    name: "Mercedes C-Class",
-    type: "Luxury",
-    price: 150,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Mercedes+Benz",
-  },
-  {
-    id: "van1",
-    name: "Toyota HiAce",
-    type: "Van",
-    price: 120,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Toyota+HiAce",
+    id: "suv-2",
+    name: "Kia Sportage",
+    type: "SUV",
+    price: 115,
+    transmission: "Automatic",
+    seats: 5,
+    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Kia+Sportage",
   },
 ];
+
+const moneyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: CONFIG.currency,
+  maximumFractionDigits: 0,
+});
+
+const cart = [];
 
 // 2. DOM Elements
 const els = {
@@ -51,6 +78,12 @@ const els = {
   fleetGrid: document.getElementById("fleetGrid"),
   carSelect: document.getElementById("carSelect"),
   bookingForm: document.getElementById("bookingForm"),
+  cartCount: document.getElementById("cartCount"),
+  cartItems: document.getElementById("cartItems"),
+  cartEmpty: document.getElementById("cartEmpty"),
+  cartSubtotal: document.getElementById("cartSubtotal"),
+  cartCheckoutButton: document.getElementById("cartCheckoutButton"),
+  clearCartButton: document.getElementById("clearCartButton"),
   inputs: {
     pickupDate: document.getElementById("pickupDate"),
     returnDate: document.getElementById("returnDate"),
@@ -79,13 +112,11 @@ function init() {
   setupDateDefaults();
   setupEventListeners();
   updateSummary(); // Initial calculation
+  renderCart();
   
   els.footerYear.textContent = new Date().getFullYear();
   
-  // Set generic WhatsApp links
-  const waLink = `https://wa.me/${CONFIG.whatsappNumber}`;
-  els.contactWa.href = waLink;
-  els.floatWa.href = waLink;
+  updateWhatsAppLinks();
 }
 
 // 4. Rendering
@@ -109,14 +140,23 @@ function renderFleet() {
       (car) => `
     <div class="ol-card">
       <img src="${car.image}" alt="${car.name}" class="ol-card-image" loading="lazy" />
-      <h3>${car.name}</h3>
-      <p>${car.type}</p>
-      <div class="ol-card-price">
-        $${car.price} <span>/ day</span>
+      <div class="ol-card-badges">
+        <span class="ol-badge">${car.type}</span>
+        <span class="ol-badge ol-badge-soft">${car.transmission}</span>
       </div>
-      <button class="ol-btn ol-btn-ghost ol-btn-full" style="margin-top:1rem" data-select-car="${car.id}">
-        Book this car
-      </button>
+      <h3>${car.name}</h3>
+      <p>${car.seats} seats · ${car.transmission}</p>
+      <div class="ol-card-price">
+        ${formatMoney(car.price)} <span>/ day</span>
+      </div>
+      <div class="ol-card-actions">
+        <button class="ol-btn ol-btn-ghost ol-btn-full" data-add-car="${car.id}">
+          Add to cart
+        </button>
+        <button class="ol-btn ol-btn-primary ol-btn-full" data-book-car="${car.id}">
+          WhatsApp checkout
+        </button>
+      </div>
     </div>
   `
     )
@@ -124,8 +164,12 @@ function renderFleet() {
 
   // Populate Select Dropdown
   els.carSelect.innerHTML = fleet
-    .map((car) => `<option value="${car.id}">${car.name} ($${car.price}/day)</option>`)
+    .map((car) => `<option value="${car.id}">${car.name} (${formatMoney(car.price)}/day)</option>`)
     .join("");
+
+  if (!els.carSelect.value && fleet[0]) {
+    els.carSelect.value = fleet[0].id;
+  }
 }
 
 // 5. Logic & Calculations
@@ -161,41 +205,164 @@ function updateSummary() {
   els.summary.duration.textContent = `${duration} day(s)`;
   els.summary.pickup.textContent = els.inputs.pickupLoc.value || "Not specified";
   els.summary.dropoff.textContent = els.inputs.dropoffLoc.value || "Not specified";
-  els.summary.rate.textContent = car ? `$${car.price}` : "-";
+  els.summary.rate.textContent = car ? formatMoney(car.price) : "-";
   
   if (car) {
     const total = car.price * duration;
-    els.summary.total.textContent = `$${total}`;
+    els.summary.total.textContent = formatMoney(total);
   }
+
+  renderCart();
 }
 
-function handleFormSubmit(e) {
-  e.preventDefault();
-  
-  const formData = new FormData(e.target);
-  const data = Object.fromEntries(formData.entries());
-  const car = fleet.find(c => c.id === data.carSelect);
-  
-  // Construct WhatsApp Message
-  const text = `
-*New Booking Request* 🚗
-------------------
-*Customer:* ${data.fullName}
-*Phone:* ${data.phone}
-*Email:* ${data.email || "N/A"}
+function getDurationInDays() {
+  const start = new Date(els.inputs.pickupDate.value);
+  const end = new Date(els.inputs.returnDate.value);
+  const diffTime = end - start;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays > 0 ? diffDays : 1;
+}
 
-*Vehicle:* ${car.name} (${car.type})
-*Dates:* ${data.pickupDate} to ${data.returnDate}
-*Pickup:* ${data.pickupLocation}
-*Dropoff:* ${data.dropoffLocation}
+function formatMoney(amount) {
+  return moneyFormatter.format(amount);
+}
 
-*Notes:* ${data.notes || "None"}
-------------------
-Please confirm availability and total price.
-  `.trim();
+function getSelectedCar() {
+  return fleet.find((car) => car.id === els.inputs.carSelect.value) || fleet[0];
+}
 
-  const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank');
+function getFormValues() {
+  return Object.fromEntries(new FormData(els.bookingForm).entries());
+}
+
+function getCartCarsOrSelectedCar() {
+  if (cart.length) {
+    return cart.map((entry) => entry.car);
+  }
+  return [getSelectedCar()].filter(Boolean);
+}
+
+function buildWhatsAppMessage(cars, data, sourceLabel) {
+  const duration = getDurationInDays();
+  const total = cars.reduce((sum, car) => sum + car.price * duration, 0);
+  const pickupDate = data.pickupDate || els.inputs.pickupDate.value;
+  const returnDate = data.returnDate || els.inputs.returnDate.value;
+  const pickupLocation = data.pickupLocation || els.inputs.pickupLoc.value || "Not specified";
+  const dropoffLocation = data.dropoffLocation || els.inputs.dropoffLoc.value || "Not specified";
+  const customerName = data.fullName || "Not yet provided";
+  const customerPhone = data.phone || "Not yet provided";
+  const customerEmail = data.email || "N/A";
+  const notes = data.notes || "None";
+
+  const carLines = cars
+    .map((car, index) => {
+      const lineTotal = car.price * duration;
+      return `${index + 1}. ${car.name} (${car.type}) - ${formatMoney(car.price)}/day x ${duration} day(s) = ${formatMoney(lineTotal)}`;
+    })
+    .join("\n");
+
+  return [
+    "*OneLink Booking Request*",
+    `Source: ${sourceLabel}`,
+    "",
+    `Customer: ${customerName}`,
+    `Phone: ${customerPhone}`,
+    `Email: ${customerEmail}`,
+    "",
+    "*Selected vehicle(s)*",
+    carLines,
+    "",
+    `Pickup date: ${pickupDate || "Not specified"}`,
+    `Return date: ${returnDate || "Not specified"}`,
+    `Duration: ${duration} day(s)`,
+    `Pickup location: ${pickupLocation}`,
+    `Drop-off location: ${dropoffLocation}`,
+    "",
+    `Notes: ${notes}`,
+    "",
+    `Estimated total: ${formatMoney(total)}`,
+    "",
+    "Please confirm availability and next payment steps.",
+  ].join("\n");
+}
+
+function openWhatsAppCheckout(cars, sourceLabel = "Direct checkout") {
+  const data = getFormValues();
+  const message = buildWhatsAppMessage(cars, data, sourceLabel);
+  const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function addCarToCart(carId) {
+  const car = fleet.find((entry) => entry.id === carId);
+  if (!car || cart.some((entry) => entry.car.id === car.id)) {
+    return;
+  }
+
+  cart.push({ car });
+  renderCart();
+}
+
+function removeCarFromCart(carId) {
+  const index = cart.findIndex((entry) => entry.car.id === carId);
+  if (index === -1) {
+    return;
+  }
+
+  cart.splice(index, 1);
+  renderCart();
+}
+
+function clearCart() {
+  cart.length = 0;
+  renderCart();
+}
+
+function renderCart() {
+  const duration = getDurationInDays();
+
+  if (!els.cartItems) {
+    return;
+  }
+
+  els.cartCount.textContent = `${cart.length} item${cart.length === 1 ? "" : "s"}`;
+  els.cartEmpty.hidden = cart.length > 0;
+
+  if (!cart.length) {
+    els.cartItems.innerHTML = "";
+    els.cartSubtotal.textContent = formatMoney(0);
+    els.cartCheckoutButton.disabled = true;
+    return;
+  }
+
+  const subtotal = cart.reduce((sum, entry) => sum + entry.car.price * duration, 0);
+
+  els.cartItems.innerHTML = cart
+    .map(
+      (entry) => `
+        <div class="ol-cart-item">
+          <div>
+            <h4>${entry.car.name}</h4>
+            <p>${entry.car.type} · ${formatMoney(entry.car.price)}/day</p>
+          </div>
+          <button type="button" class="ol-cart-remove" data-remove-car="${entry.car.id}">Remove</button>
+        </div>
+      `
+    )
+    .join("");
+
+  els.cartSubtotal.textContent = formatMoney(subtotal);
+  els.cartCheckoutButton.disabled = false;
+}
+
+function updateWhatsAppLinks() {
+  const waLink = `https://wa.me/${CONFIG.whatsappNumber}`;
+  if (els.contactWa) {
+    els.contactWa.href = waLink;
+  }
+  if (els.floatWa) {
+    els.floatWa.href = waLink;
+  }
 }
 
 // 6. Event Listeners
@@ -209,16 +376,53 @@ function setupEventListeners() {
   // Theme Toggle
   els.themeToggle.addEventListener("click", toggleTheme);
 
-  // Handle "Book this car" buttons in grid (Event Delegation)
+  // Handle fleet action buttons in grid
   els.fleetGrid.addEventListener("click", (e) => {
-    const btn = e.target.closest('[data-select-car]');
-    if (btn) {
-      const carId = btn.getAttribute('data-select-car');
-      els.carSelect.value = carId;
+    const addButton = e.target.closest("[data-add-car]");
+    const bookButton = e.target.closest("[data-book-car]");
+
+    if (addButton) {
+      addCarToCart(addButton.getAttribute("data-add-car"));
+      return;
+    }
+
+    if (bookButton) {
+      const carId = bookButton.getAttribute("data-book-car");
+      const car = fleet.find((entry) => entry.id === carId);
+      if (!car) {
+        return;
+      }
+
+      els.carSelect.value = car.id;
       updateSummary();
-      document.getElementById('checkout').scrollIntoView({ behavior: 'smooth' });
+      openWhatsAppCheckout([car], "Direct checkout");
     }
   });
+
+  if (els.cartItems) {
+    els.cartItems.addEventListener("click", (e) => {
+      const removeButton = e.target.closest("[data-remove-car]");
+      if (!removeButton) {
+        return;
+      }
+
+      removeCarFromCart(removeButton.getAttribute("data-remove-car"));
+    });
+  }
+
+  if (els.cartCheckoutButton) {
+    els.cartCheckoutButton.addEventListener("click", () => {
+      if (!cart.length) {
+        return;
+      }
+
+      openWhatsAppCheckout(getCartCarsOrSelectedCar(), "Cart checkout");
+    });
+  }
+
+  if (els.clearCartButton) {
+    els.clearCartButton.addEventListener("click", clearCart);
+  }
 }
 
 // 7. Theme Handling
@@ -241,6 +445,14 @@ function toggleTheme() {
     localStorage.setItem("theme", "dark");
     els.themeToggle.querySelector("span").textContent = "☀️";
   }
+}
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+
+  const cars = getCartCarsOrSelectedCar();
+  const sourceLabel = cart.length ? "Cart checkout" : "Direct checkout";
+  openWhatsAppCheckout(cars, sourceLabel);
 }
 
 // Run
