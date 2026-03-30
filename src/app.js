@@ -6,6 +6,9 @@ const CONFIG = {
   whatsappNumber: "233242674116",
 };
 
+const IMAGE_BASE = "/public/images";
+const imagePath = (fileName) => `${IMAGE_BASE}/${encodeURIComponent(fileName)}`;
+
 const fleet = [
   {
     id: "4x4-1",
@@ -14,7 +17,7 @@ const fleet = [
     price: 180,
     transmission: "Automatic",
     seats: 7,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Land+Cruiser+Prado",
+    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46 (4).jpeg"),
   },
   {
     id: "4x4-2",
@@ -23,7 +26,7 @@ const fleet = [
     price: 165,
     transmission: "Automatic",
     seats: 7,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Pajero+Sport",
+    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46 (3).jpeg"),
   },
   {
     id: "saloon-1",
@@ -32,7 +35,7 @@ const fleet = [
     price: 75,
     transmission: "Automatic",
     seats: 5,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Toyota+Corolla",
+    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46.jpeg"),
   },
   {
     id: "saloon-2",
@@ -41,7 +44,7 @@ const fleet = [
     price: 95,
     transmission: "Automatic",
     seats: 5,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Honda+Accord",
+    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46 (1).jpeg"),
   },
   {
     id: "suv-1",
@@ -50,7 +53,7 @@ const fleet = [
     price: 120,
     transmission: "Automatic",
     seats: 5,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Hyundai+Tucson",
+    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.47.jpeg"),
   },
   {
     id: "suv-2",
@@ -59,7 +62,7 @@ const fleet = [
     price: 115,
     transmission: "Automatic",
     seats: 5,
-    image: "https://placehold.co/600x400/e2e8f0/1e293b?text=Kia+Sportage",
+    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.47 (1).jpeg"),
   },
 ];
 
@@ -107,6 +110,11 @@ const els = {
 
 // 3. Initialization
 function init() {
+  const heroBg = document.querySelector(".ol-hero-bg");
+  if (heroBg && fleet[0]) {
+    heroBg.style.backgroundImage = `url("${fleet[0].image}")`;
+  }
+
   renderFleet();
   setupTheme();
   setupDateDefaults();

@@ -4,7 +4,7 @@
   "description": "OneLink Car Rentals PWA",
   "private": true,
   "scripts": {
-    "start": "http-server src -p 3000 -c-1 -o"
+    "start": "http-server . -p 3000 -c-1 -o /src/index.html"
   },
   "devDependencies": {
     "http-server": "^14.1.1"
