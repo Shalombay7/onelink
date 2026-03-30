@@ -6,8 +6,17 @@ const CONFIG = {
   whatsappNumber: "233242674116",
 };
 
-const IMAGE_BASE = "/public/images";
-const imagePath = (fileName) => `${IMAGE_BASE}/${encodeURIComponent(fileName)}`;
+const IMAGE_BASE = "/public/images/fleet";
+const assetPath = (fileName) => `${IMAGE_BASE}/${fileName}`;
+
+const vehicleImages = {
+  prado: assetPath("prado.jpeg"),
+  pajero: assetPath("pajero.jpeg"),
+  corolla: assetPath("corolla.jpeg"),
+  accord: assetPath("accord.jpeg"),
+  tucson: assetPath("tucson.jpeg"),
+  sportage: assetPath("sportage.jpeg"),
+};
 
 const fleet = [
   {
@@ -17,7 +26,7 @@ const fleet = [
     price: 180,
     transmission: "Automatic",
     seats: 7,
-    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46 (4).jpeg"),
+    image: vehicleImages.prado,
   },
   {
     id: "4x4-2",
@@ -26,7 +35,7 @@ const fleet = [
     price: 165,
     transmission: "Automatic",
     seats: 7,
-    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46 (3).jpeg"),
+    image: vehicleImages.pajero,
   },
   {
     id: "saloon-1",
@@ -35,7 +44,7 @@ const fleet = [
     price: 75,
     transmission: "Automatic",
     seats: 5,
-    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46.jpeg"),
+    image: vehicleImages.corolla,
   },
   {
     id: "saloon-2",
@@ -44,7 +53,7 @@ const fleet = [
     price: 95,
     transmission: "Automatic",
     seats: 5,
-    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.46 (1).jpeg"),
+    image: vehicleImages.accord,
   },
   {
     id: "suv-1",
@@ -53,7 +62,7 @@ const fleet = [
     price: 120,
     transmission: "Automatic",
     seats: 5,
-    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.47.jpeg"),
+    image: vehicleImages.tucson,
   },
   {
     id: "suv-2",
@@ -62,7 +71,7 @@ const fleet = [
     price: 115,
     transmission: "Automatic",
     seats: 5,
-    image: imagePath("WhatsApp Image 2026-03-27 at 06.15.47 (1).jpeg"),
+    image: vehicleImages.sportage,
   },
 ];
 
