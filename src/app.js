@@ -260,6 +260,16 @@ function getCartCarsOrSelectedCar() {
   return [getSelectedCar()].filter(Boolean);
 }
 
+function ensureBookingFormReady() {
+  if (!els.bookingForm.checkValidity()) {
+    els.bookingForm.scrollIntoView({ behavior: "smooth", block: "start" });
+    els.bookingForm.reportValidity();
+    return false;
+  }
+
+  return true;
+}
+
 function buildWhatsAppMessage(cars, data, sourceLabel) {
   const duration = getDurationInDays();
   const total = cars.reduce((sum, car) => sum + car.price * duration, 0);
@@ -305,6 +315,10 @@ function buildWhatsAppMessage(cars, data, sourceLabel) {
 }
 
 function openWhatsAppCheckout(cars, sourceLabel = "Direct checkout") {
+  if (!ensureBookingFormReady()) {
+    return;
+  }
+
   const data = getFormValues();
   const message = buildWhatsAppMessage(cars, data, sourceLabel);
   const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -436,6 +450,7 @@ function setupEventListeners() {
 
       els.carSelect.value = car.id;
       updateSummary();
+      els.bookingForm.scrollIntoView({ behavior: "smooth", block: "start" });
       openWhatsAppCheckout([car], "Direct checkout");
     }
   });
