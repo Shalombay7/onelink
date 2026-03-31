@@ -384,7 +384,6 @@ function updateWhatsAppLinks() {
   }
 
   const displayTargets = [
-    document.getElementById("contactWhatsAppNumber"),
     document.getElementById("summaryWhatsAppNumber"),
   ];
 
