@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="OneLink">
+  <rect width="192" height="192" rx="40" fill="#0f62fe"/>
+  <circle cx="96" cy="96" r="62" fill="none" stroke="#ffffff" stroke-width="12" opacity="0.18"/>
+  <text x="96" y="110" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="64" font-weight="800" fill="#ffffff">OL</text>
+</svg>

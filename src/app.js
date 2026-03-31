@@ -4,9 +4,10 @@
 const CONFIG = {
   currency: "USD",
   whatsappNumber: "233242674116",
+  whatsappDisplay: "+233242674116",
 };
 
-const IMAGE_BASE = "/public/images/fleet";
+const IMAGE_BASE = new URL("../public/images/fleet/", window.location.href).href;
 const assetPath = (fileName) => `${IMAGE_BASE}/${fileName}`;
 
 const vehicleImages = {
@@ -379,7 +380,31 @@ function updateWhatsAppLinks() {
   }
   if (els.floatWa) {
     els.floatWa.href = waLink;
+    els.floatWa.setAttribute("aria-label", `Chat on WhatsApp ${CONFIG.whatsappDisplay}`);
   }
+
+  const displayTargets = [
+    document.getElementById("contactWhatsAppNumber"),
+    document.getElementById("summaryWhatsAppNumber"),
+  ];
+
+  displayTargets.forEach((node) => {
+    if (node) {
+      node.textContent = CONFIG.whatsappDisplay;
+    }
+  });
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch((error) => {
+      console.warn("Service worker registration failed:", error);
+    });
+  });
 }
 
 // 6. Event Listeners
@@ -474,3 +499,4 @@ function handleFormSubmit(e) {
 
 // Run
 init();
+registerServiceWorker();

@@ -8,14 +8,14 @@
   "description": "Modern car rental booking via WhatsApp",
   "icons": [
     {
-      "src": "https://placehold.co/192x192/2563eb/ffffff?text=OL",
+      "src": "/public/icons/ol-192.svg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg+xml"
     },
     {
-      "src": "https://placehold.co/512x512/2563eb/ffffff?text=OL",
+      "src": "/public/icons/ol-512.svg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/svg+xml"
     }
   ]
 }
